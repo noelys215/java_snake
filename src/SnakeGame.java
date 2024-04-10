@@ -77,7 +77,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         g.fillRect(snakeHead.x * tileSize, snakeHead.y * tileSize, tileSize, tileSize);
 
         /* Snake Body */
-        for (Tile snakePart : snakeBody) {
+        for (int i = 0; i < snakeBody.size(); i++) {
+            Tile snakePart = snakeBody.get(i);
             g.fillRect(snakePart.x * tileSize, snakePart.y * tileSize, tileSize, tileSize);
         }
     }
@@ -96,6 +97,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             snakeBody.add(new Tile(food.x, food.y));
             placeFood();
         }
+
+        /* Snake Body */
+        for (int i = snakeBody.size() - 1; i >= 0; i--) {
+            Tile snakePart = snakeBody.get(i);
+            if (i == 0) {
+                snakePart.x = snakeHead.x;
+                snakePart.y = snakeHead.y;
+            } else {
+                Tile prevSnakePart = snakeBody.get(i - 1);
+                snakePart.x = prevSnakePart.x;
+                snakePart.y = prevSnakePart.y;
+            }
+        }
+
         /* Snake Head */
         snakeHead.x += velocityX;
         snakeHead.y = velocityY;
