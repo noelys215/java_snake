@@ -29,9 +29,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     Random random;
 
     /* Game Logic */
-    Timer gameLoop;
     int velocityX;
     int velocityY;
+    Timer gameLoop;
     boolean gameOver = false;
 
     SnakeGame(int boardWidth, int boardHeight) {
@@ -50,7 +50,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         random = new Random();
         placeFood();
 
-        velocityX = 0;
+        velocityX = 1;
         velocityY = 0;
 
         gameLoop = new Timer(100, this);
@@ -82,6 +82,15 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             Tile snakePart = snakeBody.get(i);
             g.fillRect(snakePart.x * tileSize, snakePart.y * tileSize, tileSize, tileSize);
         }
+
+        /* Score */
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (gameOver) {
+            g.setColor(Color.RED);
+            g.drawString("Game Over: " + String.valueOf(snakeBody.size()), tileSize - 16, tileSize);
+        } else {
+            g.drawString("Score: " + String.valueOf(snakeBody.size()), tileSize - 16, tileSize);
+        }
     }
 
     public void placeFood() {
@@ -99,7 +108,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             placeFood();
         }
 
-        /* Snake Body */
         for (int i = snakeBody.size() - 1; i >= 0; i--) {
             Tile snakePart = snakeBody.get(i);
             if (i == 0) {
@@ -111,16 +119,16 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 snakePart.y = prevSnakePart.y;
             }
         }
-
-        /* Snake Head */
         snakeHead.x += velocityX;
-        snakeHead.y = velocityY;
+        snakeHead.y += velocityY;
 
-        /* Game Over Logic */
         for (int i = 0; i < snakeBody.size(); i++) {
             Tile snakePart = snakeBody.get(i);
-            //Collide w/Snake head
             if (collision(snakeHead, snakePart)) gameOver = true;
+
+            if (snakeHead.x * tileSize < 0 || snakeHead.x * tileSize > boardWidth ||
+                    snakeHead.y * tileSize < 0 || snakeHead.y * tileSize > boardHeight)
+                gameOver = true;
         }
     }
 
